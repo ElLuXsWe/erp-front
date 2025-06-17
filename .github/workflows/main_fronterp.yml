@@ -25,16 +25,19 @@ jobs:
         run: npm ci
 
       - name: Build the React app
-        run: CI=false npm run build   # Evita que warnings fallen el build
+        run: CI=false npm run build
 
       - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
 
-      - name: Upload build artifact
+      - name: Zip build folder
+        run: zip -r build.zip build
+
+      - name: Upload zipped build artifact
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: build
+          path: build.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,7 +52,8 @@ jobs:
         with:
           name: react-build
 
-      # No necesitas descomprimir porque el artifact es la carpeta 'build'
+      - name: Unzip build artifact
+        run: unzip build.zip
 
       - name: Login to Azure
         uses: azure/login@v2
