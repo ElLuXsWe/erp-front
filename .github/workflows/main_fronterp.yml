@@ -33,7 +33,7 @@ jobs:
       - name: Create .deployment file with startup command
         run: |
           echo "[config]" > .deployment
-          echo "command = npm install && npm start" >> .deployment
+          echo "command = bash -c \"npm install && npm start\"" >> .deployment
 
       - name: Zip full project for deployment (excluding node_modules and .git)
         run: zip -r release.zip . -x "node_modules/*" ".git/*"
@@ -72,4 +72,4 @@ jobs:
         with:
           app-name: 'frontErp'      
           slot-name: 'Production'
-          package: '.'  # carpeta raíz con package.json y .deployment
+          package: '.'
