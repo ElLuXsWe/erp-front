@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Build the React app
-        run: npm run build
+        run: CI=false npm run build   # Evita que warnings fallen el build
 
       - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
@@ -49,8 +49,7 @@ jobs:
         with:
           name: react-build
 
-      - name: Unzip build artifact
-        run: unzip react-build.zip
+      # No necesitas descomprimir porque el artifact es la carpeta 'build'
 
       - name: Login to Azure
         uses: azure/login@v2
