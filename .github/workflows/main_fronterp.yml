@@ -27,8 +27,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: mrluxus.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          username: mrluxus
+          password: jszE7X+BpTIs/cbo9AOVPGZ4baLHvJE5FjwnRN+dQ6+ACRDyMTEZ
 
       - name: Build and push image to ACR
         uses: docker/build-push-action@v5
