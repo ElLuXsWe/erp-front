@@ -1,0 +1,12 @@
+/* src/styles.css */
+body {
+    background-color: #1e1e2f;  /* Color de fondo que cubrirá toda la página */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;  /* Fuente por defecto */
+  }
+  
+  html, body, #root {
+    height: 100%;  /* Asegura que el fondo cubra toda la altura */
+  }
+  

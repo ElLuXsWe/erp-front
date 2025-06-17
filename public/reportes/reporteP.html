@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reporte de Proyectos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Export libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/docx@8.3.0/build/index.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <!-- Iconos -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <!-- Estilos -->
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f3f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .icon-button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 22px;
+      color: #495057;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+
+    .icon-button:hover {
+      color: #0d6efd;
+    }
+
+    .icon-button::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #343a40;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      opacity: 0;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .icon-button:hover::after {
+      opacity: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      table-layout: fixed; /* Fija ancho columnas */
+    }
+
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: left;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis; /* Truncar texto largo */
+    }
+
+    th {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pagination button {
+      padding: 8px 14px;
+      border: none;
+      background-color: #6c757d;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .pagination button:disabled {
+      background-color: #adb5bd;
+      cursor: default;
+    }
+
+    /* Anchos fijos columnas */
+    th:nth-child(1), td:nth-child(1) { width: 15%; }
+    th:nth-child(2), td:nth-child(2) { width: 20%; }
+    th:nth-child(3), td:nth-child(3) { width: 10%; }
+    th:nth-child(4), td:nth-child(4) { width: 10%; }
+    th:nth-child(5), td:nth-child(5) { width: 10%; }
+    th:nth-child(6), td:nth-child(6) { width: 10%; }
+    th:nth-child(7), td:nth-child(7) { width: 25%; }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .modal-header button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal p {
+      margin: 6px 0;
+      line-height: 1.4;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reporte de Proyectos</h1>
+
+    <div class="toolbar">
+      <button class="icon-button" onclick="exportarPDF()" data-tooltip="Exportar a PDF">
+        <i class="fas fa-file-pdf"></i>
+      </button>
+      <button class="icon-button" onclick="exportarExcel()" data-tooltip="Exportar a Excel">
+        <i class="fas fa-file-excel"></i>
+      </button>
+      <button class="icon-button" onclick="exportarWord()" data-tooltip="Exportar a Word">
+        <i class="fas fa-file-word"></i>
+      </button>
+    </div>
+
+    <div id="root"></div>
+  </div>
+
+  <script type="text/babel">
+  const { useState } = React;
+  const { Document, Packer, Paragraph, Table, TableCell, TableRow, HeadingLevel } = window.docx;
+
+  const traducirEstado = (estado) => {
+    switch (estado) {
+      case '1': return 'Activo';
+      case '2': return 'Terminado';
+      case '3': return 'Atrasado';
+      case '4': return 'Cancelado';
+      default: return 'Desconocido';
+    }
+  };
+
+  const mostrarTexto = (valor) => {
+    return valor ? valor : 'No definido';
+  };
+
+  const formatearUsuarios = (usuarios) => {
+    if (!Array.isArray(usuarios)) return 'No definido';
+    return usuarios.map(u => u.nombre).join(', ') || 'No definido';
+  };
+
+  const ReporteProyectos = ({ proyectos }) => {
+    const [paginaActual, setPaginaActual] = useState(1);
+    const [modalProyecto, setModalProyecto] = useState(null);
+    const porPagina = 5;
+    const totalPaginas = Math.ceil(proyectos.length / porPagina);
+    const inicio = (paginaActual - 1) * porPagina;
+    const fin = inicio + porPagina;
+    const pagina = proyectos.slice(inicio, fin);
+
+    return (
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Inicio</th>
+              <th>Límite</th>
+              <th>Fin</th>
+              <th>Estado</th>
+              <th>Usuarios</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pagina.map(p => (
+              <tr key={p.id} onClick={() => setModalProyecto(p)} title="Clic para ver detalles completos">
+                <td>{mostrarTexto(p.nombre)}</td>
+                <td>{mostrarTexto(p.descripcion)}</td>
+                <td>{mostrarTexto(p.fecha_inicio)}</td>
+                <td>{mostrarTexto(p.fecha_limite)}</td>
+                <td>{mostrarTexto(p.fecha_fin)}</td>
+                <td>{traducirEstado(p.estado)}</td>
+                <td>{formatearUsuarios(p.usuarios)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="pagination">
+          <button disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
+          <span>Página {paginaActual} de {totalPaginas}</span>
+          <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
+        </div>
+
+        {modalProyecto && (
+          <div className="modal" onClick={() => setModalProyecto(null)}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <span>📁 {mostrarTexto(modalProyecto.nombre)}</span>
+                <button onClick={() => setModalProyecto(null)}>✖</button>
+              </div>
+              <p><strong>Descripción:</strong> {mostrarTexto(modalProyecto.descripcion)}</p>
+              <p><strong>Inicio:</strong> {mostrarTexto(modalProyecto.fecha_inicio)}</p>
+              <p><strong>Límite:</strong> {mostrarTexto(modalProyecto.fecha_limite)}</p>
+              <p><strong>Fin:</strong> {mostrarTexto(modalProyecto.fecha_fin)}</p>
+              <p><strong>Estado:</strong> {traducirEstado(modalProyecto.estado)}</p>
+              <p><strong>Usuarios:</strong> {formatearUsuarios(modalProyecto.usuarios)}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Funciones exportar
+
+  const exportarPDF = () => {
+    const proyectos = JSON.parse(sessionStorage.getItem('reporteProyectos') || '[]');
+    if (proyectos.length === 0) {
+      alert('No hay datos para exportar.');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Reporte de Proyectos', 14, 22);
+    const columnas = [
+      { header: 'Nombre', dataKey: 'nombre' },
+      { header: 'Descripción', dataKey: 'descripcion' },
+      { header: 'Inicio', dataKey: 'fecha_inicio' },
+      { header: 'Límite', dataKey: 'fecha_limite' },
+      { header: 'Fin', dataKey: 'fecha_fin' },
+      { header: 'Estado', dataKey: 'estado' },
+      { header: 'Usuarios', dataKey: 'usuarios' },
+    ];
+
+    const filas = proyectos.map(p => ({
+      nombre: p.nombre || 'No definido',
+      descripcion: p.descripcion || 'No definido',
+      fecha_inicio: p.fecha_inicio || 'No definido',
+      fecha_limite: p.fecha_limite || 'No definido',
+      fecha_fin: p.fecha_fin || 'No definido',
+      estado: traducirEstado(p.estado),
+      usuarios: formatearUsuarios(p.usuarios),
+    }));
+
+    doc.autoTable({
+  startY: 30,
+  columns: columnas,
+  body: filas,
+  styles: {
+    fontSize: 8,
+    cellWidth: 'wrap',
+  },
+  columnStyles: {
+    descripcion: { cellWidth: 40 }, // Ajusta el valor según lo que necesites
+  },
+  headStyles: {
+    fillColor: [13, 110, 253],
+    textColor: [255, 255, 255],
+  },
+  margin: { left: 10, right: 10 },
+  didDrawPage: (data) => {
+    // Puedes añadir pie de página aquí si lo deseas
+  },
+});
+
+doc.save('reporte_proyectos.pdf');
+
+  };
+
+  const exportarExcel = () => {
+    const proyectos = JSON.parse(sessionStorage.getItem('reporteProyectos') || '[]');
+    if (proyectos.length === 0) {
+      alert('No hay datos para exportar.');
+      return;
+    }
+
+    const wb = XLSX.utils.book_new();
+    const wsData = [
+      ['Nombre', 'Descripción', 'Inicio', 'Límite', 'Fin', 'Estado', 'Usuarios'],
+      ...proyectos.map(p => [
+        p.nombre || 'No definido',
+        p.descripcion || 'No definido',
+        p.fecha_inicio || 'No definido',
+        p.fecha_limite || 'No definido',
+        p.fecha_fin || 'No definido',
+        traducirEstado(p.estado),
+        formatearUsuarios(p.usuarios),
+      ])
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Proyectos');
+    XLSX.writeFile(wb, 'reporte_proyectos.xlsx');
+  };
+
+  const exportarWord = () => {
+    const proyectos = JSON.parse(sessionStorage.getItem('reporteProyectos') || '[]');
+    if (proyectos.length === 0) {
+      alert('No hay datos para exportar.');
+      return;
+    }
+
+    const filas = proyectos.map(p =>
+      new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph(mostrarTexto(p.nombre))] }),
+          new TableCell({ children: [new Paragraph(mostrarTexto(p.descripcion))] }),
+          new TableCell({ children: [new Paragraph(mostrarTexto(p.fecha_inicio))] }),
+          new TableCell({ children: [new Paragraph(mostrarTexto(p.fecha_limite))] }),
+          new TableCell({ children: [new Paragraph(mostrarTexto(p.fecha_fin))] }),
+          new TableCell({ children: [new Paragraph(traducirEstado(p.estado))] }),
+          new TableCell({ children: [new Paragraph(formatearUsuarios(p.usuarios))] }),
+        ]
+      })
+    );
+
+    const table = new Table({
+      rows: [
+        new TableRow({
+          children: [
+            'Nombre', 'Descripción', 'Inicio', 'Límite', 'Fin', 'Estado', 'Usuarios'
+          ].map(text => new TableCell({ children: [new Paragraph({ text, bold: true })] }))
+        }),
+        ...filas
+      ]
+    });
+
+    const doc = new Document({
+      sections: [{ children: [
+        new Paragraph({ text: "Reporte de Proyectos", heading: HeadingLevel.HEADING1 }),
+        table
+      ]}]
+    });
+
+    Packer.toBlob(doc).then(blob => {
+      window.saveAs(blob, "reporte_proyectos.docx");
+    });
+  };
+
+  // Render React con datos
+  const proyectos = JSON.parse(sessionStorage.getItem('reporteProyectos') || '[]');
+
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <ReporteProyectos proyectos={proyectos} />
+  );
+  </script>
+</body>
+</html>

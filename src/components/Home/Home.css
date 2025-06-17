@@ -1,0 +1,133 @@
+/* Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Evita scroll global */
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    height: 100vh;
+  }
+  
+  /* Barra de navegación superior */
+  .navbar {
+    background-color: #353547; /* Barra superior */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+  
+  .navbar-title {
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Barra lateral */
+  .sidebar {
+    position: fixed;
+    top: 60px;
+    left: -420px; /* Oculto completamente */
+    width: 220px;
+    height: calc(100vh - 60px);
+    background-color: #4e4a5f; /* Color de barra lateral */
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 50px rgba(0, 0, 0, 0.5);
+    transition: left 0.3s ease;
+    z-index: 5;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 10px 0;
+    cursor: pointer;
+  }
+  
+  .sidebar ul li:hover {
+    color: #620093;
+  }
+  
+  /* Información de usuario + Dropdown */
+  .user-info {
+    position: relative;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    z-index: 11;
+  }
+  
+  /* Dropdown de Cerrar sesión */
+  .dropdown-menu {
+    position: absolute;
+    top: 50px; /* Alineado justo con la barra superior */
+    left: 10px;
+    background-color: #4e4a5f; /* Color de la barra lateral */
+    padding: 5px 10px;
+    border-radius: 0px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 99;
+  }
+  
+  .dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  
+  .dropdown-item {
+    color: white;
+    background-color: #620093;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #4d0073;
+  }
+  
+  /* Contenido principal */
+  .content {
+    margin-top: 60px;
+    padding: 20px;
+    height: calc(100vh - 60px);
+    overflow: auto;
+  }
+  
