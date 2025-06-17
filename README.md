@@ -1,44 +1,35 @@
-Frontend ERP - React Application
-Este proyecto es el frontend del sistema ERP, desarrollado con React y generado con Create React App.
+# Frontend ERP - Aplicación React
 
-Node.js es necesario para el entorno de desarrollo, construcción y ejecución de scripts.
+Este proyecto es el frontend del sistema ERP, desarrollado con **React.js**.  
+Proporciona la interfaz de usuario para la gestión y visualización de datos del ERP.
 
-Scripts disponibles
+---
+
+## Scripts disponibles
+
 En el directorio del proyecto, puedes ejecutar:
 
-npm start
-Ejecuta la aplicación en modo desarrollo.
-Abre http://localhost:3000 para verla en tu navegador.
+### `npm start`
 
-La página se recargará automáticamente cuando hagas cambios.
-También verás errores de lint en la consola si existen.
+Inicia la aplicación en modo desarrollo.  
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para visualizar la app.
 
-npm test
-Ejecuta el corredor de pruebas en modo interactivo con observación continua.
-Para más información, consulta ejecución de pruebas.
+### `npm run build`
 
-npm run build
-Genera una versión optimizada para producción en la carpeta build.
-React se empaqueta en modo producción, minimizando y optimizando el código.
-Los archivos generados incluyen hashes para el cacheo.
+Construye la aplicación para producción.  
+Los archivos optimizados se generan en la carpeta `build`.
 
-Esta versión está lista para ser desplegada.
+### `npm test`
 
-Más detalles en despliegue.
+Ejecuta pruebas unitarias y de componentes con **Jest** y **React Testing Library**.
 
-npm run eject
-Nota: esta operación es irreversible. Una vez ejecutes eject, no podrás revertirla.
+---
 
-Permite tomar control completo sobre la configuración del proyecto (Webpack, Babel, ESLint, etc.)
-Ideal si quieres personalizar la configuración por completo.
+## Requisitos previos
 
-La mayoría de los usuarios no necesitarán usar este comando.
+- **Node.js** (versión recomendada 18 o superior)  
+- **npm** (gestor de paquetes incluido con Node.js)  
+- Navegador moderno para ejecutar la app React  
+- (Opcional) Docker para contenerización y despliegue  
 
-Requisitos previos
-Node.js (entorno necesario para scripts de desarrollo, construcción y testing)
-
-npm (gestor de paquetes incluido con Node.js)
-
-Navegador web para visualizar la app
-
-(Opcional) Docker para contenerización y despliegue
+---
