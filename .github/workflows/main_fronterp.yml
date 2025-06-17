@@ -19,24 +19,22 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x' 
+          node-version: '18.x'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the React app 
+      - name: Build the React app
         run: CI=false npm run build
 
       - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
-      - name: Zip full project for deployment (excluding node_modules and .git)
-        run: zip -r release.zip . -x "node_modules/*" ".git/*"
 
-      - name: Upload artifact for deployment job
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: react-full-project
-          path: release.zip
+          name: react-build
+          path: build
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,10 +47,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: react-full-project
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
+          name: react-build
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -64,6 +59,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'frontErp'      
+          app-name: 'frontErp'
           slot-name: 'Production'
           package: '.'
