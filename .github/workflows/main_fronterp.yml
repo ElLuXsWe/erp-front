@@ -30,13 +30,18 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
 
-      - name: Zip build output for deployment
-        run: zip -r release.zip build
+      - name: Create .deployment file with startup command
+        run: |
+          echo "[config]" > .deployment
+          echo "command = npm install && npm start" >> .deployment
+
+      - name: Zip full project for deployment (excluding node_modules and .git)
+        run: zip -r release.zip . -x "node_modules/*" ".git/*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: react-build
+          name: react-full-project
           path: release.zip
 
   deploy:
@@ -50,7 +55,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: react-build
+          name: react-full-project
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
@@ -67,4 +72,4 @@ jobs:
         with:
           app-name: 'frontErp'      
           slot-name: 'Production'
-          package: './build'
+          package: '.'  # carpeta raíz con package.json y .deployment
