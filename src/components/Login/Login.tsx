@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
-import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import { SupportedModels } from '@tensorflow-models/face-landmarks-detection';
 import Webcam from 'react-webcam';
