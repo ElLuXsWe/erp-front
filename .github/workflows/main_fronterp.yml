@@ -1,11 +1,3 @@
-name: Build and deploy React+TypeScript app to Azure Web App - frontErp
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,6 +19,11 @@ jobs:
       - name: Build the React app
         run: CI=false npm run build
 
+      - name: Copy package.json and lockfile to build folder
+        run: |
+          cp package.json build/
+          cp package-lock.json build/
+
       - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
 
@@ -38,33 +35,3 @@ jobs:
         with:
           name: react-build
           path: build.zip
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: react-build
-
-      - name: Unzip build artifact
-        run: unzip build.zip
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1FEE206C695B45708520DB2C58DA947A }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_655B310463434D25B8E2A827D1A75F87 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7FDC33D9A0B24143A14B33066609E820 }}
-
-      - name: Deploy React build to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'frontErp'
-          slot-name: 'Production'
-          package: 'build'
