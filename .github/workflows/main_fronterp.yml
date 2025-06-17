@@ -51,7 +51,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7FDC33D9A0B24143A14B33066609E820 }}
 
       - name: Deploy image to Azure Web App
-        uses: azure/webapps-container-deploy@v1
+        uses: azure/webapps-deploy@v2
         with:
           app-name: frontErp
           images: mrluxus.azurecr.io/front-erp:latest
