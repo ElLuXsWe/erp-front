@@ -260,7 +260,7 @@ const Usuarios = () => {
     }
   };
 const [stream, setStream] = useState<MediaStream | null>(null);
-const [foto, setFoto] = useState<string | null>(null);
+const [, setFoto] = useState<string | null>(null);
 const videoRef = useRef<HTMLVideoElement>(null);
 const [mostrarCamara, setMostrarCamara] = useState(false);
 const abrirCamara = async () => {

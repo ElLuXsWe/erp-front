@@ -159,7 +159,9 @@ const [token, setToken] = useState<string>('');
       await compararConBD(img, screenshot);
     }
   };
-
+useEffect(() => {
+  detectarRostro();
+}, [detectarRostro]);
   const compararConBD = async (imgUser: HTMLImageElement, screenshot: string) => {
     try {
       if (!imagenBD || typeof imagenBD !== 'string') return;

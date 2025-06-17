@@ -21,7 +21,6 @@ interface Usuario {
 }
 
 const Proyectos = () => {
-  const navigate = useNavigate();
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [proyectoEditando, setProyectoEditando] = useState<Proyecto | null>(null);
