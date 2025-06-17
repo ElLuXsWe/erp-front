@@ -29,12 +29,6 @@ jobs:
 
       - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
-
-      - name: Create .deployment file with startup command
-        run: |
-          echo "[config]" > .deployment
-          echo "command = bash -c \"npm install && npm start\"" >> .deployment
-
       - name: Zip full project for deployment (excluding node_modules and .git)
         run: zip -r release.zip . -x "node_modules/*" ".git/*"
 
