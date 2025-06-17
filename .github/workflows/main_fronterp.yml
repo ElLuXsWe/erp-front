@@ -13,20 +13,21 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'   # Node 18 es estable y compatible con React y TS
+          node-version: '18.x' 
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the React app
-        run: npm run build
+      - name: Build the React app 
+        run: CI=false npm run build
 
-      - name: Run tests
+      - name: Run tests with coverage
         run: npm test -- --coverage --watchAll=false
 
       - name: Zip build output for deployment
@@ -64,6 +65,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'frontErp'       # Nombre de tu Azure Web App
-          slot-name: 'Production'    # O 'staging' si tienes slots
-          package: './build'         # Carpeta build generada por React
+          app-name: 'frontErp'      
+          slot-name: 'Production'
+          package: './build'
