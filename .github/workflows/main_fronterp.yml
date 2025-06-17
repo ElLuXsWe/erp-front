@@ -36,7 +36,6 @@ jobs:
           context: .
           push: true
           tags: mrluxus.azurecr.io/front-erp:latest
-
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
