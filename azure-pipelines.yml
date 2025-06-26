@@ -11,6 +11,7 @@ variables:
   WEBAPP_NAME: 'frontErp'
 
 stages:
+# -------- STAGE BUILD --------
 - stage: Build
   displayName: 'Build and Push Docker Image'
   jobs:
@@ -26,13 +27,14 @@ stages:
       displayName: 'Login to ACR'
       inputs:
         command: login
-        containerRegistry: 'back erp'   # <- Aquí el nombre de tu Service Connection en Azure DevOps hacia ACR
+        containerRegistry: 'acr-erp'   # <- Service Connection tipo Docker Registry hacia tu ACR
 
     - script: |
         docker build -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):latest .
         docker push $(ACR_NAME).azurecr.io/$(IMAGE_NAME):latest
       displayName: 'Build and Push Image'
 
+# -------- STAGE DEPLOY --------
 - stage: Deploy
   displayName: 'Deploy to Azure Web App'
   dependsOn: Build
@@ -43,6 +45,6 @@ stages:
     - task: AzureWebAppContainer@1
       displayName: 'Deploy Docker Image to App Service'
       inputs:
-        azureSubscription: 'back erp'    # <- Mismo nombre de Service Connection
+        azureSubscription: 'back erp'    # <- Esta es la conexión de tipo Azure Resource Manager
         appName: $(WEBAPP_NAME)
         containers: $(ACR_NAME).azurecr.io/$(IMAGE_NAME):latest
